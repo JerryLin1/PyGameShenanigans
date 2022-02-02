@@ -4,18 +4,18 @@ import random
 
 from pygame import Vector2
 
-from init import entities
+from init import entities, init_entity
 from test_game.draw_helpers import draw_circle_alpha
 from test_game.entity import Entity
-from test_game.particles import Particle
+from test_game.particles import Particle, ParticleCircle
+from test_game.unit import Unit
 
 
-class Unit(Entity):
+class Player(Unit):
     def __init__(self, position):
-        Entity.__init__(self)
+        Unit.__init__(self, position)
         self.keys = pygame.key.get_pressed()
         self.speed = 3
-        self.position = position
 
     def tick(self, tick_time: float, surface):
         self.keys = pygame.key.get_pressed()
@@ -26,7 +26,7 @@ class Unit(Entity):
         if self.keys[pygame.K_SPACE]:
             burst_particles(self.position)
 
-        self.draw(surface)
+        Unit.tick(self, tick_time, surface)
 
     def draw(self, surface):
         draw_circle_alpha(surface, (255, 255, 255), self.position, 2)
@@ -39,13 +39,12 @@ def burst_particles(position, amount=5, force=5):
         angle = random.uniform(0, math.pi * 2)
         vector = Vector2(math.cos(angle), math.sin(angle))
         vector *= random.uniform(0, force)
-        entities.append(Particle(position=(x, y),
-                                 color=get_random_color(),
-                                 # radius=random.uniform(1, 2),
-                                 lifespan=1000,
-                                 vel=vector,
-                                 accel=Vector2(0, 10),
-                                 lights=[1, 2]))
+        init_entity(ParticleCircle(position=(x, y),
+                                   color=get_random_color(),
+                                   lifespan=1000,
+                                   vel=vector,
+                                   accel=Vector2(0, 10),
+                                   lights=[1, 2]))
 
 
 def get_random_color():
