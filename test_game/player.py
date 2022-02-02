@@ -15,21 +15,30 @@ class Player(Unit):
     def __init__(self, position):
         Unit.__init__(self, position)
         self.keys = pygame.key.get_pressed()
+        self.prev_keys = self.keys
         self.speed = 3
 
     def tick(self, tick_time: float, surface):
         self.keys = pygame.key.get_pressed()
-        self.position[0] += (self.keys[pygame.K_d] - self.keys[
-            pygame.K_a]) * self.speed * tick_time / 20
-        self.position[1] += (self.keys[pygame.K_s] - self.keys[
-            pygame.K_w]) * self.speed * tick_time / 20
-        if self.keys[pygame.K_SPACE]:
+        self.position[0] += (self.key_down(pygame.K_d) - self.key_down(
+            pygame.K_a)) * self.speed * tick_time / 20
+        self.position[1] += (self.key_down(pygame.K_s) - self.key_down(
+            pygame.K_w)) * self.speed * tick_time / 20
+
+        if self.key_click(pygame.K_SPACE):
             burst_particles(self.position)
 
+        self.prev_keys = self.keys
         Unit.tick(self, tick_time, surface)
 
     def draw(self, surface):
         draw_circle_alpha(surface, (255, 255, 255), self.position, 2)
+
+    def key_down(self, key):
+        return self.keys[key]
+
+    def key_click(self, key):
+        return not self.prev_keys[key] and self.keys[key]
 
 
 def burst_particles(position, amount=5, force=5):
@@ -43,8 +52,8 @@ def burst_particles(position, amount=5, force=5):
                                    color=get_random_color(),
                                    lifespan=1000,
                                    vel=vector,
-                                   accel=Vector2(0, 10),
-                                   lights=[1, 2]))
+                                   # accel=Vector2(0, 10),
+                                   lights=[2]))
 
 
 def get_random_color():
