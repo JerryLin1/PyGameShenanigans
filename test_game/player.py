@@ -23,9 +23,10 @@ class Player(Unit):
             "trail": Timer(10, self.trail_particle)
         }
         self.light = Particle(position=self.position,
-                              color=(50, 50, 50),
+                              color=(20, 20, 20),
                               lifespan=-1,
-                              lights=[5])
+                              lights=[5],
+                              flags=[Particle.LIGHT_FLICKER])
         init_entity(self.light)
 
     def update(self, tick_time: float, surface):
@@ -55,7 +56,7 @@ class Player(Unit):
 
         self.prev_keys = self.keys
 
-        self.light.lights[0] = 0.2 * math.sin(0.005 * self.time_since_spawn) + 5
+
         self.light.position = copy_vector2(self.position)
 
     def trail_particle(self, number=1):
