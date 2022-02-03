@@ -5,7 +5,7 @@ from pygame.math import Vector2
 from pygame import draw
 from pygame.color import Color
 
-from test_game.draw_helpers import draw_circle_alpha
+from test_game.helpers import draw_circle_alpha, draw_rect_alpha
 from test_game.entity import Entity
 
 
@@ -37,7 +37,7 @@ class Particle(Entity):
     def draw(self, surface, lf):
         ucol = self.color + (255 * lf,)
         upos = (round(self.position[0] - 1), round(self.position[1] - 1))
-        surface.set_at(upos, ucol)
+        draw_rect_alpha(surface, ucol, upos + (1, 1))
 
     def draw_light(self, surface, lf):
         for light in self.lights:

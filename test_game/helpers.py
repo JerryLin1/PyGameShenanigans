@@ -1,11 +1,13 @@
+import math
+import random
+
 import pygame
 
-
+# https://stackoverflow.com/a/64630102
 def draw_rect_alpha(surface, color, rect):
     shape_surf = pygame.Surface(pygame.Rect(rect).size, pygame.SRCALPHA)
     pygame.draw.rect(shape_surf, color, shape_surf.get_rect())
     surface.blit(shape_surf, rect)
-
 
 def draw_circle_alpha(surface, color, center, radius):
     target_rect = pygame.Rect(center, (0, 0)).inflate((radius * 2, radius * 2))
@@ -22,3 +24,25 @@ def draw_polygon_alpha(surface, color, points):
     pygame.draw.polygon(shape_surf, color,
                         [(x - min_x, y - min_y) for x, y in points])
     surface.blit(shape_surf, target_rect)
+
+
+def random_vector2():
+    angle = random.uniform(0, math.pi * 2)
+    vector = pygame.Vector2(math.cos(angle), math.sin(angle))
+    return vector
+
+
+class Timer:
+    def __init__(self, time, callback, is_active=True):
+        self.time = time
+        self.elapsed = 0
+        self.callback = callback
+        self.is_active = is_active
+
+    def tick(self, tick_time):
+        if not self.is_active:
+            return
+        self.elapsed += tick_time
+        if self.elapsed >= self.time:
+            self.elapsed = 0
+            self.callback()

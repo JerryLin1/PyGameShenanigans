@@ -5,8 +5,9 @@ import random
 from pygame import Vector2
 
 from init import entities, init_entity
-from test_game.draw_helpers import draw_circle_alpha
+from test_game.helpers import draw_circle_alpha
 from test_game.entity import Entity
+from test_game.helpers import random_vector2, Timer
 from test_game.particles import Particle, ParticleCircle
 from test_game.unit import Unit
 
@@ -17,6 +18,9 @@ class Player(Unit):
         self.keys = pygame.key.get_pressed()
         self.prev_keys = self.keys
         self.speed = 3
+        self.timers = {
+            "trail": Timer(50, self.trail_particle)
+        }
 
     def tick(self, tick_time: float, surface):
         self.keys = pygame.key.get_pressed()
@@ -25,11 +29,19 @@ class Player(Unit):
         self.position[1] += (self.key_down(pygame.K_s) - self.key_down(
             pygame.K_w)) * self.speed * tick_time / 20
 
-        if self.key_click(pygame.K_SPACE):
+        if self.key_up(pygame.K_SPACE):
             burst_particles(self.position)
 
         self.prev_keys = self.keys
         Unit.tick(self, tick_time, surface)
+
+    def trail_particle(self):
+        vector = random_vector2()
+        vector *= random.uniform(0, 0.5)
+        init_entity(Particle(position=self.position,
+                             color=(255, 255, 255),
+                             lifespan=2000,
+                             vel=vector))
 
     def draw(self, surface):
         draw_circle_alpha(surface, (255, 255, 255), self.position, 2)
@@ -39,6 +51,9 @@ class Player(Unit):
 
     def key_click(self, key):
         return not self.prev_keys[key] and self.keys[key]
+
+    def key_up(self, key):
+        return self.prev_keys[key] and not self.keys[key]
 
 
 def burst_particles(position, amount=5, force=5):
@@ -61,3 +76,4 @@ def get_random_color():
     g = random.randint(100, 255)
     b = random.randint(100, 255)
     return (r, g, b)
+
