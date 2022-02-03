@@ -23,16 +23,19 @@ class Particle(Entity):
         self.current_life = 0
 
     def tick(self, tick_time: float, surface):
-        self.current_life += tick_time
-        self.vel += self.accel * tick_time / 1000
-        self.position += self.vel
         lf = (1 - self.current_life / self.lifespan)
         if lf < 0:
             lf = 0
         self.draw(surface, lf)
         self.draw_light(surface, lf)
-        if self.current_life >= self.lifespan:
-            self.killed = True
+        self.vel += self.accel * tick_time / 1000
+        self.position += self.vel
+        if self.lifespan>=0:
+            self.current_life += tick_time
+            if self.current_life >= self.lifespan:
+                self.killed = True
+
+
 
     def draw(self, surface, lf):
         ucol = self.color + (255 * lf,)

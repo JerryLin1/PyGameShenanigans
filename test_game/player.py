@@ -19,7 +19,7 @@ class Player(Unit):
         self.prev_keys = self.keys
         self.speed = 3
         self.timers = {
-            "trail": Timer(50, self.trail_particle)
+            "trail": Timer(10, self.trail_particle)
         }
 
     def tick(self, tick_time: float, surface):
@@ -35,13 +35,14 @@ class Player(Unit):
         self.prev_keys = self.keys
         Unit.tick(self, tick_time, surface)
 
-    def trail_particle(self):
-        vector = random_vector2()
-        vector *= random.uniform(0, 0.5)
-        init_entity(Particle(position=self.position,
-                             color=(255, 255, 255),
-                             lifespan=2000,
-                             vel=vector))
+    def trail_particle(self, number=1):
+        for i in range(number):
+            vector = random_vector2()
+            vector *= random.uniform(0, 1)
+            init_entity(Particle(position=self.position,
+                                 color=(255, 255, 255),
+                                 lifespan=500,
+                                 vel=vector))
 
     def draw(self, surface):
         draw_circle_alpha(surface, (255, 255, 255), self.position, 2)
