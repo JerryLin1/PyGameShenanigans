@@ -14,7 +14,7 @@ from test_game.unit import Unit
 
 
 class Player(Unit):
-    def __init__(self, position):
+    def __init__(self, position: pygame.Vector2):
         Unit.__init__(self, position)
         self.keys = pygame.key.get_pressed()
         self.prev_keys = self.keys
@@ -22,6 +22,11 @@ class Player(Unit):
         self.timers = {
             "trail": Timer(10, self.trail_particle)
         }
+        self.light = Particle(position=self.position,
+                              color=get_random_color(),
+                              lifespan=-1,
+                              lights=[5])
+        init_entity(self.light)
 
     def tick(self, tick_time: float, surface):
         self.keys = pygame.key.get_pressed()
@@ -51,12 +56,15 @@ class Player(Unit):
         self.prev_keys = self.keys
         Unit.tick(self, tick_time, surface)
 
+        self.light.lights[0] = 0.2 * math.sin(0.005 * self.time_since_spawn) + 5
+        self.light.position = copy_vector2(self.position)
+
     def trail_particle(self, number=1):
         for i in range(number):
             vector = random_vector2()
             vector *= random.uniform(0, 1)
             init_entity(Particle(position=copy_vector2(self.position),
-                                 color=get_random_color(100,255,0,50,0,50),
+                                 color=get_random_color(100, 255, 0, 50, 0, 50),
                                  lifespan=500,
                                  vel=vector,
                                  flags=[
@@ -88,7 +96,8 @@ def burst_particles(position, amount=5, force=5):
             Particle.SCALE_ALPHA_LIFETIME
         ]
         init_entity(ParticleCircle(position=(x, y),
-                                   color=get_random_color(50,255,50,255,50,255),
+                                   color=get_random_color(50, 255, 50, 255, 50,
+                                                          255),
                                    lifespan=1000,
                                    vel=vector,
                                    # accel=Vector2(0, 10),

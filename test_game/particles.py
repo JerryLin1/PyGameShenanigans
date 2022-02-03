@@ -50,9 +50,9 @@ class Particle(Entity):
     def draw_light(self, surface, lf):
         for light in self.lights:
             if Particle.SCALE_SIZE_LIFETIME in self.flags:
-                urad = lf * self.radius
+                urad = lf * light
             else:
-                urad = self.radius
+                urad = light
             if Particle.SCALE_ALPHA_LIFETIME in self.flags:
                 ucol = self.color + (100 * lf,)
             else:
