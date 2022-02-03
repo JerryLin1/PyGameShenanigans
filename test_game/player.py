@@ -23,12 +23,12 @@ class Player(Unit):
             "trail": Timer(10, self.trail_particle)
         }
         self.light = Particle(position=self.position,
-                              color=get_random_color(),
+                              color=(50, 50, 50),
                               lifespan=-1,
                               lights=[5])
         init_entity(self.light)
 
-    def tick(self, tick_time: float, surface):
+    def update(self, tick_time: float, surface):
         self.keys = pygame.key.get_pressed()
 
         # If moving
@@ -51,10 +51,9 @@ class Player(Unit):
 
         if self.key_up(pygame.K_SPACE):
             # kill(self)
-            burst_particles(self.position, 5)
+            burst_particles(self.position)
 
         self.prev_keys = self.keys
-        Unit.tick(self, tick_time, surface)
 
         self.light.lights[0] = 0.2 * math.sin(0.005 * self.time_since_spawn) + 5
         self.light.position = copy_vector2(self.position)
@@ -96,8 +95,9 @@ def burst_particles(position, amount=5, force=5):
             Particle.SCALE_ALPHA_LIFETIME
         ]
         init_entity(ParticleCircle(position=(x, y),
-                                   color=get_random_color(50, 255, 50, 255, 50,
-                                                          255),
+                                   color=get_random_color(50, 255,
+                                                          50, 255,
+                                                          50, 255),
                                    lifespan=1000,
                                    vel=vector,
                                    # accel=Vector2(0, 10),

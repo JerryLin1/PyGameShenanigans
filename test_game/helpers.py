@@ -13,11 +13,16 @@ def draw_rect_alpha(surface, color, rect):
     surface.blit(shape_surf, rect)
 
 
-def draw_circle_alpha(surface, color, center, radius):
+def draw_circle_alpha(surface: pygame.Surface, color,
+                      center, radius, light=False):
     target_rect = pygame.Rect(center, (0, 0)).inflate((radius * 2, radius * 2))
     shape_surf = pygame.Surface(target_rect.size, pygame.SRCALPHA)
     pygame.draw.circle(shape_surf, color, (radius, radius), radius)
-    surface.blit(shape_surf, target_rect)
+    if light:
+        surface.blit(shape_surf, target_rect,
+                     special_flags=pygame.BLEND_RGBA_ADD)
+    else:
+        surface.blit(shape_surf, target_rect)
 
 
 def draw_polygon_alpha(surface, color, points):
@@ -77,6 +82,12 @@ def get_random_color(rmin=0, rmax=255,
 
 
 class Timer:
+    """
+    Timers take a time and a callback, and belong to an entity. Every x
+    milliseconds, the callback is called.
+    An entity's timer is updated in tick()
+    """
+
     def __init__(self, time, callback, is_active=True):
         self.time = time
         self.elapsed = 0
@@ -84,6 +95,7 @@ class Timer:
         self.is_active = is_active
 
     def tick(self, tick_time):
+        # If the timer is inactive, do not continue
         if not self.is_active:
             return
         self.elapsed += tick_time

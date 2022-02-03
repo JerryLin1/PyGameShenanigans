@@ -2,13 +2,14 @@ import pygame
 
 from test_game.entity import Entity
 
+
 # Active game objects with basic physics
 class Unit(Entity):
     def __init__(self, position: pygame.Vector2):
         Entity.__init__(self)
         self.speed = 3
         self.position = position
-        self.timers = {}
+
         self.accel = pygame.Vector2(0, 0)
         self.vel = pygame.Vector2(0, 0)
         self.friction = 0.8
@@ -25,9 +26,11 @@ class Unit(Entity):
                 self.vel = pygame.Vector2(0, 0)
         self.position += self.vel
 
+        self.update(tick_time, surface)
         self.draw(surface)
-        for timer in self.timers.values():
-            timer.tick(tick_time)
+
+    def update(self, tick_time, surface):
+        raise NotImplementedError
 
     def draw(self, surface):
         raise NotImplementedError

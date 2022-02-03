@@ -12,6 +12,7 @@ from test_game.entity import Entity
 class Particle(Entity):
     SCALE_ALPHA_LIFETIME = 0
     SCALE_SIZE_LIFETIME = 1
+
     def __init__(self, position: Vector2, color: Color = (255, 255, 255),
                  lifespan: float = 5000, vel: Vector2 = Vector2(0, 0),
                  accel: Vector2 = Vector2(0, 0), lights=[], flags=[]):
@@ -54,10 +55,12 @@ class Particle(Entity):
             else:
                 urad = light
             if Particle.SCALE_ALPHA_LIFETIME in self.flags:
-                ucol = self.color + (100 * lf,)
+                c = self.color
+                ucol = (c[0] * lf, c[1] * lf, c[2] * lf)
             else:
-                ucol = self.color + (100,)
-            draw_circle_alpha(surface, ucol, self.position, urad * 6)
+                ucol = self.color
+            draw_circle_alpha(surface, ucol, self.position, urad * 6,
+                              light=True)
 
 
 class ParticleCircle(Particle):
