@@ -10,9 +10,11 @@ from test_game.entity import Entity
 
 
 class Particle(Entity):
+    SCALE_ALPHA_LIFETIME = 0
+    SCALE_SIZE_LIFETIME = 1
     def __init__(self, position: Vector2, color: Color = (255, 255, 255),
                  lifespan: float = 5000, vel: Vector2 = Vector2(0, 0),
-                 accel: Vector2 = Vector2(0, 0), lights=[]):
+                 accel: Vector2 = Vector2(0, 0), lights=[], flags=[]):
         Entity.__init__(self)
         self.position = position
         self.lifespan = lifespan
@@ -21,8 +23,10 @@ class Particle(Entity):
         self.vel = vel
         self.accel = accel
         self.current_life = 0
+        self.flags = flags
 
     def tick(self, tick_time: float, surface):
+        # print(self.flags)
         lf = (1 - self.current_life / self.lifespan)
         if lf < 0:
             lf = 0
@@ -30,41 +34,56 @@ class Particle(Entity):
         self.draw_light(surface, lf)
         self.vel += self.accel * tick_time / 1000
         self.position += self.vel
-        if self.lifespan>=0:
+        if self.lifespan >= 0:
             self.current_life += tick_time
             if self.current_life >= self.lifespan:
                 self.killed = True
 
-
-
     def draw(self, surface, lf):
-        ucol = self.color + (255 * lf,)
+        if Particle.SCALE_ALPHA_LIFETIME in self.flags:
+            ucol = self.color + (255 * lf,)
+        else:
+            ucol = self.color
         upos = (round(self.position[0] - 1), round(self.position[1] - 1))
         draw_rect_alpha(surface, ucol, upos + (1, 1))
 
     def draw_light(self, surface, lf):
         for light in self.lights:
-            urad = lf * light
-            ucol_light = self.color + (100 * lf,)
-            draw_circle_alpha(surface, ucol_light, self.position, urad * 6)
+            if Particle.SCALE_SIZE_LIFETIME in self.flags:
+                urad = lf * self.radius
+            else:
+                urad = self.radius
+            if Particle.SCALE_ALPHA_LIFETIME in self.flags:
+                ucol = self.color + (100 * lf,)
+            else:
+                ucol = self.color + (100,)
+            draw_circle_alpha(surface, ucol, self.position, urad * 6)
 
 
 class ParticleCircle(Particle):
     def __init__(self, position: Vector2, color: Color = (255, 255, 255),
                  lifespan: float = 5000, vel: Vector2 = Vector2(0, 0),
-                 accel: Vector2 = Vector2(0, 0), lights=[], radius: float = 2):
+                 accel: Vector2 = Vector2(0, 0), lights=[], flags=[],
+                 radius: float = 2):
         Particle.__init__(self=self,
                           position=position,
                           lifespan=lifespan,
                           color=color,
                           vel=vel,
                           accel=accel,
-                          lights=lights)
+                          lights=lights,
+                          flags=flags)
         self.radius = radius
 
     def draw(self, surface, lf):
-        urad = math.ceil(lf * self.radius)
-        ucol = self.color + (255 * lf,)
+        if Particle.SCALE_SIZE_LIFETIME in self.flags:
+            urad = math.ceil(lf * self.radius)
+        else:
+            urad = self.radius
+        if Particle.SCALE_ALPHA_LIFETIME in self.flags:
+            ucol = self.color + (255 * lf,)
+        else:
+            ucol = self.color
         draw_circle_alpha(surface=surface,
                           color=ucol,
                           center=self.position,

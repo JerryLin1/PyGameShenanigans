@@ -16,7 +16,7 @@ def main():
 
     running = True
 
-    player = Player([0, 0])
+    player = Player([WIDTH//2, HEIGHT//2])
     init_entity(player)
     # main loop
     while running:
