@@ -4,8 +4,9 @@ import random
 
 from pygame import Vector2
 
-from init import entities, init_entity
-from test_game.helpers import draw_circle_alpha, kill, copy_vector2, \
+from init import init_entity
+from test_game import init
+from test_game.helpers import draw_circle, kill, copy_vector2, \
     get_random_color
 from test_game.entity import Entity
 from test_game.helpers import random_vector2, Timer
@@ -31,6 +32,8 @@ class Player(Unit):
         init_entity(self.light)
 
     def update(self, tick_time: float, surface):
+        init.camera_pos.update(self.position[0] - init.WIDTH // 2,
+                               self.position[1] - init.HEIGHT // 2)
         self.keys = pygame.key.get_pressed()
 
         # If moving
@@ -57,7 +60,6 @@ class Player(Unit):
 
         self.prev_keys = self.keys
 
-
         self.light.position = copy_vector2(self.position)
 
     def trail_particle(self, number=5):
@@ -65,7 +67,8 @@ class Player(Unit):
             vector = random_vector2()
             vector *= random.uniform(0, 1)
             init_entity(Particle(position=copy_vector2(self.position),
-                                 color=get_random_color(100, 255, 0, 100, 0, 100),
+                                 color=get_random_color(100, 255, 0, 100, 0,
+                                                        100),
                                  lifespan=1000,
                                  vel=vector,
                                  lights=[2],
@@ -75,8 +78,8 @@ class Player(Unit):
                                  ]))
 
     def draw(self, surface):
-        draw_circle_alpha(surface, (219, 0, 44), self.position, 3)
-        draw_circle_alpha(surface, (255, 255, 255), self.position, 2)
+        draw_circle(surface, (219, 0, 44), self.position, 3)
+        draw_circle(surface, (255, 255, 255), self.position, 2)
 
     def key_down(self, key):
         return self.keys[key]

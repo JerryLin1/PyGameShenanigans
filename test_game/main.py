@@ -1,9 +1,12 @@
 import pygame
 from init import entities, WIDTH, HEIGHT, init_entity
+from test_game import init
+from test_game.helpers import draw_rect
 
 from test_game.player import Player
 
 empty = (0, 0, 0, 0)  # The last 0 indicates 0 alpha, a transparent color
+
 
 def main():
     pygame.init()
@@ -19,7 +22,7 @@ def main():
     # main loop
     while running:
         screen.fill((0, 0, 0))
-        pygame.draw.rect(screen, (50, 20, 120), pygame.Rect(100, 100, 200, 80))
+        draw_rect(screen, (50, 20, 120), (100, 100, 200, 80))
 
         dt = clock.tick(60)
 
@@ -27,12 +30,11 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-        screen.blit(screen, (0, 0))
         pygame.display.update()
 
 
 def tick_entities(surface, delta_time):
-    for i in range(len(entities)-1, -1, -1):
+    for i in range(len(entities) - 1, -1, -1):
         entity = entities[i]
         entity.tick(delta_time, surface)
         if entity.killed:

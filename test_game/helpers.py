@@ -4,17 +4,25 @@ import random
 import pygame
 
 # https://stackoverflow.com/a/64630102
+from test_game import init
 from test_game.entity import Entity
+from test_game.init import camera_pos
 
 
-def draw_rect_alpha(surface, color, rect):
+def draw_rect(surface, color, rect):
+    rect = (rect[0] - init.camera_pos[0],
+            rect[1] - init.camera_pos[1],
+            rect[2],
+            rect[3])
     shape_surf = pygame.Surface(pygame.Rect(rect).size, pygame.SRCALPHA)
     pygame.draw.rect(shape_surf, color, shape_surf.get_rect())
     surface.blit(shape_surf, rect)
 
 
-def draw_circle_alpha(surface: pygame.Surface, color,
-                      center, radius, light=False):
+def draw_circle(surface: pygame.Surface, color,
+                center, radius, light=False):
+    center = pygame.Vector2(center[0] - init.camera_pos[0],
+                            center[1] - init.camera_pos[1])
     target_rect = pygame.Rect(center, (0, 0)).inflate((radius * 2, radius * 2))
     shape_surf = pygame.Surface(target_rect.size, pygame.SRCALPHA)
     pygame.draw.circle(shape_surf, color, (radius, radius), radius)
@@ -25,10 +33,13 @@ def draw_circle_alpha(surface: pygame.Surface, color,
         surface.blit(shape_surf, target_rect)
 
 
-def draw_polygon_alpha(surface, color, points):
+def draw_polygon(surface, color, points):
     lx, ly = zip(*points)
     min_x, min_y, max_x, max_y = min(lx), min(ly), max(lx), max(ly)
-    target_rect = pygame.Rect(min_x, min_y, max_x - min_x, max_y - min_y)
+    target_rect = pygame.Rect(min_x - init.camera_pos[0],
+                              min_y - init.camera_pos[1],
+                              max_x - min_x - init.camera_pos[0],
+                              max_y - min_y - init.camera_pos[1])
     shape_surf = pygame.Surface(target_rect.size, pygame.SRCALPHA)
     pygame.draw.polygon(shape_surf, color,
                         [(x - min_x, y - min_y) for x, y in points])
