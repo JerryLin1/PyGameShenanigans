@@ -22,7 +22,8 @@ class Player(Unit):
         self.speed = 2
         self.timers = {
             # This will call trail_particle ever 5 ms when moving
-            "trail": Timer(5, self.trail_particle, is_active=False)
+            "trail": Timer(5, self.trail_particle, is_active=False),
+            "shoot": Timer(250, self.shoot_particle, is_active=False)
         }
         self.light = Particle(position=self.position,
                               color=(20, 20, 20),
@@ -62,6 +63,10 @@ class Player(Unit):
         for event in init.events:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.shoot_particle()
+                self.timers["shoot"].is_active = True
+                self.timers["shoot"].reset()
+            elif event.type == pygame.MOUSEBUTTONUP:
+                self.timers["shoot"].is_active = False
 
         self.prev_keys = self.keys
 
@@ -89,12 +94,10 @@ class Player(Unit):
         diff_vec = mouse_pos - self.position
         diff_vec = diff_vec.normalize() * shoot_force
         init_entity(ParticleCircle(position=copy_vector2(self.position),
-                                   color=get_random_color(100, 255, 0, 100, 0,
-                                                          100),
-                                   radius=2,
+                                   color=(255, 255, 255),
+                                   radius=1,
                                    lifespan=5000,
-                                   vel=diff_vec,
-                                   lights=[8]))
+                                   vel=diff_vec))
 
     def draw(self, surface):
         draw_circle(surface, (219, 0, 44), self.position, 3)

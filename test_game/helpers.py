@@ -120,3 +120,7 @@ class Timer:
 
     def reset(self):
         self.elapsed = 0
+
+    def toggle_active(self):
+        self.is_active = not self.is_active
+        return self.is_active
