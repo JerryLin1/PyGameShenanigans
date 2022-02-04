@@ -46,6 +46,10 @@ def draw_polygon(surface, color, points):
     surface.blit(shape_surf, target_rect)
 
 
+def get_mouse_pos_global():
+    return pygame.mouse.get_pos() + init.camera_pos
+
+
 def random_vector2() -> pygame.Vector2:
     """
     Generates a normalized Vector2 pointing in a random direction
@@ -113,3 +117,6 @@ class Timer:
         if self.elapsed >= self.time:
             self.elapsed = 0
             self.callback()
+
+    def reset(self):
+        self.elapsed = 0

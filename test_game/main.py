@@ -21,13 +21,14 @@ def main():
     init_entity(player)
     # main loop
     while running:
+        init.events = pygame.event.get()
         screen.fill((0, 0, 0))
         draw_rect(screen, (50, 20, 120), (100, 100, 200, 80))
 
         dt = clock.tick(60)
 
         tick_entities(screen, dt)
-        for event in pygame.event.get():
+        for event in init.events:
             if event.type == pygame.QUIT:
                 running = False
         pygame.display.update()

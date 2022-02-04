@@ -7,7 +7,7 @@ from pygame import Vector2
 from init import init_entity
 from test_game import init
 from test_game.helpers import draw_circle, kill, copy_vector2, \
-    get_random_color
+    get_random_color, get_mouse_pos_global
 from test_game.entity import Entity
 from test_game.helpers import random_vector2, Timer
 from test_game.particles import Particle, ParticleCircle
@@ -21,7 +21,8 @@ class Player(Unit):
         self.prev_keys = self.keys
         self.speed = 2
         self.timers = {
-            "trail": Timer(5, self.trail_particle)
+            # This will call trail_particle ever 5 ms when moving
+            "trail": Timer(5, self.trail_particle, is_active=False)
         }
         self.light = Particle(position=self.position,
                               color=(20, 20, 20),
@@ -58,6 +59,10 @@ class Player(Unit):
             # kill(self)
             burst_particles(self.position)
 
+        for event in init.events:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self.shoot_particle()
+
         self.prev_keys = self.keys
 
         self.light.position = copy_vector2(self.position)
@@ -74,8 +79,22 @@ class Player(Unit):
                                  lights=[2],
                                  flags=[
                                      Particle.SCALE_ALPHA_LIFETIME,
+                                     Particle.SCALE_SIZE_LIFETIME,
                                      Particle.MAIN_DRAW_DISABLED
                                  ]))
+
+    def shoot_particle(self):
+        shoot_force = 8
+        mouse_pos = get_mouse_pos_global()
+        diff_vec = mouse_pos - self.position
+        diff_vec = diff_vec.normalize() * shoot_force
+        init_entity(ParticleCircle(position=copy_vector2(self.position),
+                                   color=get_random_color(100, 255, 0, 100, 0,
+                                                          100),
+                                   radius=2,
+                                   lifespan=5000,
+                                   vel=diff_vec,
+                                   lights=[8]))
 
     def draw(self, surface):
         draw_circle(surface, (219, 0, 44), self.position, 3)
@@ -98,10 +117,6 @@ def burst_particles(position, amount=5, force=5):
         angle = random.uniform(0, math.pi * 2)
         vector = Vector2(math.cos(angle), math.sin(angle))
         vector *= random.uniform(0, force)
-        flags = [
-            Particle.SCALE_SIZE_LIFETIME,
-            Particle.SCALE_ALPHA_LIFETIME
-        ]
         init_entity(ParticleCircle(position=(x, y),
                                    color=get_random_color(50, 255,
                                                           50, 255,
@@ -110,4 +125,8 @@ def burst_particles(position, amount=5, force=5):
                                    vel=vector,
                                    # accel=Vector2(0, 10),
                                    lights=[10],
-                                   flags=flags))
+                                   flags=[
+                                       Particle.SCALE_SIZE_LIFETIME,
+                                       Particle.SCALE_ALPHA_LIFETIME
+                                   ]
+                                   ))

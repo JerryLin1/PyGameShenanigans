@@ -2,6 +2,7 @@ import pygame
 
 # Global variables
 entities = []
+events = []
 camera_pos = pygame.Vector2(0, 0)
 WIDTH = 320
 HEIGHT = 224
