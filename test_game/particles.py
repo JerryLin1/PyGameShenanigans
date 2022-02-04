@@ -13,6 +13,7 @@ class Particle(Entity):
     SCALE_ALPHA_LIFETIME = 0
     SCALE_SIZE_LIFETIME = 1
     LIGHT_FLICKER = 2
+    MAIN_DRAW_DISABLED = 3
 
     def __init__(self, position: Vector2, color: Color = (255, 255, 255),
                  lifespan: float = 5000, vel: Vector2 = Vector2(0, 0),
@@ -42,6 +43,8 @@ class Particle(Entity):
                 self.killed = True
 
     def draw(self, surface, lf):
+        if Particle.MAIN_DRAW_DISABLED in self.flags:
+            return
         if Particle.SCALE_ALPHA_LIFETIME in self.flags:
             ucol = self.color + (255 * lf,)
         else:
@@ -66,7 +69,7 @@ class Particle(Entity):
             else:
                 ucol = self.color
 
-            draw_circle_alpha(surface, ucol, self.position, urad * 6,
+            draw_circle_alpha(surface, ucol, self.position, urad,
                               light=True)
 
 

@@ -12,7 +12,7 @@ class Unit(Entity):
 
         self.accel = pygame.Vector2(0, 0)
         self.vel = pygame.Vector2(0, 0)
-        self.friction = 0.8
+        self.friction = 0.9
 
     def tick(self, tick_time: float, surface):
         Entity.tick(self, tick_time)

@@ -1,7 +1,7 @@
 # Global variables
 entities = []
-WIDTH = 240
-HEIGHT = 180
+WIDTH = 320
+HEIGHT = 224
 
 
 def init_entity(entity):

@@ -20,13 +20,14 @@ class Player(Unit):
         self.prev_keys = self.keys
         self.speed = 2
         self.timers = {
-            "trail": Timer(10, self.trail_particle)
+            "trail": Timer(5, self.trail_particle)
         }
         self.light = Particle(position=self.position,
                               color=(20, 20, 20),
                               lifespan=-1,
-                              lights=[5],
-                              flags=[Particle.LIGHT_FLICKER])
+                              lights=[10],
+                              flags=[Particle.LIGHT_FLICKER,
+                                     Particle.MAIN_DRAW_DISABLED])
         init_entity(self.light)
 
     def update(self, tick_time: float, surface):
@@ -59,16 +60,18 @@ class Player(Unit):
 
         self.light.position = copy_vector2(self.position)
 
-    def trail_particle(self, number=1):
+    def trail_particle(self, number=5):
         for i in range(number):
             vector = random_vector2()
             vector *= random.uniform(0, 1)
             init_entity(Particle(position=copy_vector2(self.position),
-                                 color=get_random_color(100, 255, 0, 50, 0, 50),
-                                 lifespan=500,
+                                 color=get_random_color(100, 255, 0, 100, 0, 100),
+                                 lifespan=1000,
                                  vel=vector,
+                                 lights=[2],
                                  flags=[
-                                     Particle.SCALE_ALPHA_LIFETIME
+                                     Particle.SCALE_ALPHA_LIFETIME,
+                                     Particle.MAIN_DRAW_DISABLED
                                  ]))
 
     def draw(self, surface):
@@ -102,5 +105,5 @@ def burst_particles(position, amount=5, force=5):
                                    lifespan=1000,
                                    vel=vector,
                                    # accel=Vector2(0, 10),
-                                   lights=[2],
+                                   lights=[10],
                                    flags=flags))

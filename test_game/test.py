@@ -32,7 +32,8 @@ def main():
 
 
 def tick_entities(surface, delta_time):
-    for entity in entities:
+    for i in range(len(entities)-1, -1, -1):
+        entity = entities[i]
         entity.tick(delta_time, surface)
         if entity.killed:
             entities.remove(entity)
