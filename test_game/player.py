@@ -75,6 +75,7 @@ class Player(Unit):
                                  ]))
 
     def draw(self, surface):
+        draw_circle_alpha(surface, (219, 0, 44), self.position, 3)
         draw_circle_alpha(surface, (255, 255, 255), self.position, 2)
 
     def key_down(self, key):

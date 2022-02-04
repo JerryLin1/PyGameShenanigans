@@ -7,7 +7,7 @@ empty = (0, 0, 0, 0)  # The last 0 indicates 0 alpha, a transparent color
 
 def main():
     pygame.init()
-    pygame.display.set_caption("Test game")
+    pygame.display.set_caption("Game")
     clock = pygame.time.Clock()
 
     screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SCALED)
