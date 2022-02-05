@@ -52,19 +52,31 @@ class Particle(Entity):
     def draw_light(self, surface):
         for light in self.lights:
             if Particle.SCALE_SIZE_LIFETIME in self.flags:
-                urad = self.lf * light
+                urad = self.lf * light.radius
             else:
-                urad = light
+                urad = light.radius
             if Particle.LIGHT_FLICKER in self.flags:
                 urad = 0.2 * math.sin(0.005 * self.time_since_spawn) + urad
                 if urad < 0:
                     urad = 0
 
-            if Particle.SCALE_ALPHA_LIFETIME in self.flags:
+            # Handles when particle size is very small.
+            # TODO: Change to make it draw a pixel instead
+            if urad < 1:
+                urad = 1
+
+            if light.color is None:
                 c = self.color
-                ucol = (c[0] * self.lf, c[1] * self.lf, c[2] * self.lf)
             else:
-                ucol = self.color
+                c = light.color
+            if Particle.SCALE_ALPHA_LIFETIME in self.flags:
+                ucol = (c[0] * self.lf * light.strength,
+                        c[1] * self.lf * light.strength,
+                        c[2] * self.lf * light.strength)
+            else:
+                ucol = (c[0] * light.strength,
+                        c[1] * light.strength,
+                        c[2] * light.strength)
 
             draw_circle(surface, ucol, self.position, urad,
                         light=True)
@@ -86,11 +98,16 @@ class ParticleCircle(Particle):
         self.radius = radius
 
     def draw(self, surface):
-        if not Particle.MAIN_DRAW_DISABLED in self.flags:
+        if Particle.MAIN_DRAW_DISABLED not in self.flags:
             if Particle.SCALE_SIZE_LIFETIME in self.flags:
                 urad = math.ceil(self.lf * self.radius)
             else:
                 urad = self.radius
+
+            # Very small handling, change to pixcel
+            if urad < 1:
+                urad = 1
+
             if Particle.SCALE_ALPHA_LIFETIME in self.flags:
                 ucol = self.color + (255 * self.lf,)
             else:

@@ -7,7 +7,7 @@ from pygame import Vector2
 from init import init_entity
 from test_game import init
 from test_game.helpers import draw_circle, kill, copy_vector2, \
-    get_random_color, get_mouse_pos_global
+    get_random_color, get_mouse_pos_global, draw_rect, Light
 from test_game.entity import Entity
 from test_game.helpers import random_vector2, Timer
 from test_game.particles import Particle, ParticleCircle
@@ -28,7 +28,9 @@ class Player(Unit):
         self.light = Particle(position=self.position,
                               color=(20, 20, 20),
                               lifespan=-1,
-                              lights=[10],
+                              lights=[
+                                  Light(10)
+                              ],
                               flags=[Particle.LIGHT_FLICKER,
                                      Particle.MAIN_DRAW_DISABLED])
         init_entity(self.light)
@@ -80,7 +82,9 @@ class Player(Unit):
                                                         100),
                                  lifespan=1000,
                                  vel=vector,
-                                 lights=[2],
+                                 lights=[
+                                     Light(2, 0.8)
+                                 ],
                                  flags=[
                                      Particle.SCALE_ALPHA_LIFETIME,
                                      Particle.SCALE_SIZE_LIFETIME,
@@ -96,6 +100,9 @@ class Player(Unit):
         init_entity(ParticleCircle(position=copy_vector2(self.position),
                                    color=(255, 255, 255),
                                    radius=1,
+                                   lights=[
+                                       Light(4)
+                                   ],
                                    lifespan=5000,
                                    vel=diff_vec))
 
@@ -127,7 +134,9 @@ def burst_particles(position, amount=5, force=5):
                                    lifespan=1000,
                                    vel=vector,
                                    # accel=Vector2(0, 10),
-                                   lights=[10],
+                                   lights=[
+                                       Light(10)
+                                   ],
                                    flags=[
                                        Particle.SCALE_SIZE_LIFETIME,
                                        Particle.SCALE_ALPHA_LIFETIME

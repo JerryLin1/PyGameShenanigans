@@ -124,3 +124,9 @@ class Timer:
     def toggle_active(self):
         self.is_active = not self.is_active
         return self.is_active
+
+class Light:
+    def __init__(self, radius, strength=0.3, color=None):
+        self.radius = radius
+        self.strength = strength
+        self.color = color
