@@ -37,9 +37,16 @@ def main():
 def tick_entities(surface, delta_time):
     for i in range(len(entities) - 1, -1, -1):
         entity = entities[i]
-        entity.tick(delta_time, surface)
+        entity.tick(delta_time)
         if entity.killed:
             entities.remove(entity)
+    for i in range(len(entities) - 1, -1, -1):
+        entity = entities[i]
+        entity.draw(surface)
+    for i in range(len(entities) - 1, -1, -1):
+        entity = entities[i]
+        if hasattr(entity, "draw_light"):
+            entity.draw_light(surface)
 
 
 if __name__ == "__main__":

@@ -33,7 +33,7 @@ class Player(Unit):
                                      Particle.MAIN_DRAW_DISABLED])
         init_entity(self.light)
 
-    def update(self, tick_time: float, surface):
+    def update(self, tick_time: float):
         init.camera_pos.update(self.position[0] - init.WIDTH // 2,
                                self.position[1] - init.HEIGHT // 2)
         self.keys = pygame.key.get_pressed()
@@ -67,7 +67,6 @@ class Player(Unit):
                 self.timers["shoot"].reset()
             elif event.type == pygame.MOUSEBUTTONUP:
                 self.timers["shoot"].is_active = False
-
         self.prev_keys = self.keys
 
         self.light.position = copy_vector2(self.position)
@@ -93,6 +92,7 @@ class Player(Unit):
         mouse_pos = get_mouse_pos_global()
         diff_vec = mouse_pos - self.position
         diff_vec = diff_vec.normalize() * shoot_force
+        pos = copy_vector2(self.position)
         init_entity(ParticleCircle(position=copy_vector2(self.position),
                                    color=(255, 255, 255),
                                    radius=1,

@@ -27,35 +27,32 @@ class Particle(Entity):
         self.accel = accel
         self.current_life = 0
         self.flags = flags
+        self.lf = 1
 
-    def tick(self, tick_time: float, surface):
-        Entity.tick(self, tick_time)
-        lf = (1 - self.current_life / self.lifespan)
-        if lf < 0:
-            lf = 0
-        self.draw(surface, lf)
-        self.draw_light(surface, lf)
+    def update(self, tick_time: float):
         self.vel += self.accel * tick_time / 1000
         self.position += self.vel
         if self.lifespan >= 0:
             self.current_life += tick_time
             if self.current_life >= self.lifespan:
                 self.killed = True
+        self.lf = (1 - self.current_life / self.lifespan)
+        if self.lf < 0:
+            self.lf = 0
 
-    def draw(self, surface, lf):
-        if Particle.MAIN_DRAW_DISABLED in self.flags:
-            return
-        if Particle.SCALE_ALPHA_LIFETIME in self.flags:
-            ucol = self.color + (255 * lf,)
-        else:
-            ucol = self.color
-        upos = (round(self.position[0] - 1), round(self.position[1] - 1))
-        draw_rect(surface, ucol, upos + (1, 1))
+    def draw(self, surface):
+        if Particle.MAIN_DRAW_DISABLED not in self.flags:
+            if Particle.SCALE_ALPHA_LIFETIME in self.flags:
+                ucol = self.color + (255 * self.lf,)
+            else:
+                ucol = self.color
+            upos = (round(self.position[0] - 1), round(self.position[1] - 1))
+            draw_rect(surface, ucol, upos + (1, 1))
 
-    def draw_light(self, surface, lf):
+    def draw_light(self, surface):
         for light in self.lights:
             if Particle.SCALE_SIZE_LIFETIME in self.flags:
-                urad = lf * light
+                urad = self.lf * light
             else:
                 urad = light
             if Particle.LIGHT_FLICKER in self.flags:
@@ -65,7 +62,7 @@ class Particle(Entity):
 
             if Particle.SCALE_ALPHA_LIFETIME in self.flags:
                 c = self.color
-                ucol = (c[0] * lf, c[1] * lf, c[2] * lf)
+                ucol = (c[0] * self.lf, c[1] * self.lf, c[2] * self.lf)
             else:
                 ucol = self.color
 
@@ -88,16 +85,17 @@ class ParticleCircle(Particle):
                           flags=flags)
         self.radius = radius
 
-    def draw(self, surface, lf):
-        if Particle.SCALE_SIZE_LIFETIME in self.flags:
-            urad = math.ceil(lf * self.radius)
-        else:
-            urad = self.radius
-        if Particle.SCALE_ALPHA_LIFETIME in self.flags:
-            ucol = self.color + (255 * lf,)
-        else:
-            ucol = self.color
-        draw_circle(surface=surface,
-                    color=ucol,
-                    center=self.position,
-                    radius=urad)
+    def draw(self, surface):
+        if not Particle.MAIN_DRAW_DISABLED in self.flags:
+            if Particle.SCALE_SIZE_LIFETIME in self.flags:
+                urad = math.ceil(self.lf * self.radius)
+            else:
+                urad = self.radius
+            if Particle.SCALE_ALPHA_LIFETIME in self.flags:
+                ucol = self.color + (255 * self.lf,)
+            else:
+                ucol = self.color
+            draw_circle(surface=surface,
+                        color=ucol,
+                        center=self.position,
+                        radius=urad)

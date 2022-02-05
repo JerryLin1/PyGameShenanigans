@@ -14,8 +14,7 @@ class Unit(Entity):
         self.vel = pygame.Vector2(0, 0)
         self.friction = 0.9
 
-    def tick(self, tick_time: float, surface):
-        Entity.tick(self, tick_time)
+    def pre_update(self, tick_time):
         # Physics
         self.vel += self.accel * tick_time / 1000
         # "friction"
@@ -25,12 +24,6 @@ class Unit(Entity):
             if self.vel.magnitude() < 0.1:
                 self.vel = pygame.Vector2(0, 0)
         self.position += self.vel
-
-        self.update(tick_time, surface)
-        self.draw(surface)
-
-    def update(self, tick_time, surface):
-        raise NotImplementedError
 
     def draw(self, surface):
         raise NotImplementedError
