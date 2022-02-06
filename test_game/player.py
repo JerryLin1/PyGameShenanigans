@@ -26,10 +26,9 @@ class Player(Unit):
             "shoot": Timer(250, self.shoot_particle, is_active=False)
         }
         self.light = Particle(position=self.position,
-                              color=(20, 20, 20),
                               lifespan=-1,
                               lights=[
-                                  Light(10)
+                                  Light(40, 0.1, (255,255,255))
                               ],
                               flags=[Particle.LIGHT_FLICKER,
                                      Particle.MAIN_DRAW_DISABLED])
@@ -78,8 +77,8 @@ class Player(Unit):
             vector = random_vector2()
             vector *= random.uniform(0, 1)
             init_entity(Particle(position=copy_vector2(self.position),
-                                 color=get_random_color(100, 255, 0, 100, 0,
-                                                        100),
+                                 color=get_random_color(100, 255, 0, 255, 0,
+                                                        255)+(200,),
                                  lifespan=1000,
                                  vel=vector,
                                  lights=[

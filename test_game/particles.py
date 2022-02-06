@@ -23,6 +23,8 @@ class Particle(Entity):
         self.lifespan = lifespan
         self.lights = lights
         self.color = color
+        if len(self.color) == 3:
+            self.color = color + (255,)
         self.vel = vel
         self.accel = accel
         self.current_life = 0
@@ -43,11 +45,13 @@ class Particle(Entity):
     def draw(self, surface):
         if Particle.MAIN_DRAW_DISABLED not in self.flags:
             if Particle.SCALE_ALPHA_LIFETIME in self.flags:
-                ucol = self.color + (255 * self.lf,)
+                c = self.color
+                ucol = (c[0], c[1], c[2], c[3] * self.lf)
             else:
                 ucol = self.color
             upos = (round(self.position[0] - 1), round(self.position[1] - 1))
             draw_rect(surface, ucol, upos + (1, 1))
+        self.draw_light(surface)
 
     def draw_light(self, surface):
         for light in self.lights:
@@ -104,15 +108,17 @@ class ParticleCircle(Particle):
             else:
                 urad = self.radius
 
-            # Very small handling, change to pixcel
+            # Very small handling, change to pixel
             if urad < 1:
                 urad = 1
 
             if Particle.SCALE_ALPHA_LIFETIME in self.flags:
-                ucol = self.color + (255 * self.lf,)
+                c = self.color
+                ucol = (c[0], c[1], c[2], c[3] * self.lf)
             else:
                 ucol = self.color
             draw_circle(surface=surface,
                         color=ucol,
                         center=self.position,
                         radius=urad)
+        self.draw_light(surface)

@@ -14,7 +14,7 @@ class Entity:
         pass
 
     def update(self, tick_time):
-        raise NotImplementedError
+        pass
 
     def pre_update(self, tick_time):
         pass

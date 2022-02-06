@@ -1,7 +1,8 @@
 import pygame
 from init import entities, WIDTH, HEIGHT, init_entity
 from test_game import init
-from test_game.helpers import draw_rect
+from test_game.entity import Entity
+from test_game.helpers import draw_rect, Timer
 
 from test_game.player import Player
 
@@ -19,6 +20,12 @@ def main():
 
     player = Player(pygame.Vector2(WIDTH // 2, HEIGHT // 2))
     init_entity(player)
+
+    debug_timer = Entity()
+    debug_timer.timers["print"] = Timer(5000, lambda: (
+        print(len("Number of entities: " + str(entities))),
+        print("FPS: "+str(clock.get_fps()))))
+    init_entity(debug_timer)
     # main loop
     while running:
         init.events = pygame.event.get()
@@ -43,10 +50,6 @@ def tick_entities(surface, delta_time):
     for i in range(len(entities) - 1, -1, -1):
         entity = entities[i]
         entity.draw(surface)
-    for i in range(len(entities) - 1, -1, -1):
-        entity = entities[i]
-        if hasattr(entity, "draw_light"):
-            entity.draw_light(surface)
 
 
 if __name__ == "__main__":
