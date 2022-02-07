@@ -32,11 +32,9 @@ class Player(Unit):
                               ],
                               flags=[Particle.LIGHT_FLICKER,
                                      Particle.MAIN_DRAW_DISABLED])
-        init_entity(self.light)
+        init.init_entity(self.light)
 
     def update(self, tick_time: float):
-        init.camera_pos.update(self.position[0] - init.WIDTH // 2,
-                               self.position[1] - init.HEIGHT // 2)
         self.keys = pygame.key.get_pressed()
 
         # If moving
@@ -74,7 +72,7 @@ class Player(Unit):
         for i in range(number):
             vector = random_vector2()
             vector *= random.uniform(0, 100)
-            init_entity(Particle(position=copy_vector2(self.position),
+            init.init_entity(Particle(position=copy_vector2(self.position),
                                  color=get_random_color(100, 255,
                                                         0, 255,
                                                         0, 255) + (200,),
@@ -95,7 +93,7 @@ class Player(Unit):
         diff_vec = mouse_pos - self.position
         diff_vec = diff_vec.normalize() * shoot_force
         pos = copy_vector2(self.position)
-        init_entity(ParticleCircle(position=copy_vector2(self.position),
+        init.init_entity(ParticleCircle(position=copy_vector2(self.position),
                                    color=(255, 255, 255),
                                    radius=1,
                                    lights=[
@@ -112,7 +110,7 @@ class Player(Unit):
         Entity.die(self)
         burst_particles(self.position, 100)
         kill(self.light)
-        init_entity(Player((0, 0)))
+        init.init_entity(Player(Vector2(0, 0)))
 
     def key_down(self, key):
         return self.keys[key]
@@ -131,7 +129,7 @@ def burst_particles(position, amount=5, force=300):
         angle = random.uniform(0, math.pi * 2)
         vector = Vector2(math.cos(angle), math.sin(angle))
         vector *= random.uniform(0, force)
-        init_entity(ParticleCircle(position=(x, y),
+        init.init_entity(ParticleCircle(position=(x, y),
                                    color=get_random_color(50, 255,
                                                           50, 255,
                                                           50, 255),

@@ -1,6 +1,7 @@
 import pygame
 from init import entities, WIDTH, HEIGHT, init_entity, FIXED_DT
 from test_game import init
+from test_game.camera_manager import CameraManager
 from test_game.entity import Entity
 from test_game.helpers import draw_rect, Timer
 
@@ -20,11 +21,14 @@ def main():
     physics_update_counter = 0
 
     player = Player(pygame.Vector2(WIDTH // 2, HEIGHT // 2))
-    init_entity(player)
+    init.init_entity(player)
+
+    camera = CameraManager()
+    init.init_entity(camera)
 
     debug_timer = Entity()
     debug_timer.timers["print"] = Timer(2500, lambda: (
-        print("Number of entities: " + str(len(entities))),
+        print("Number of entities: " + str(len(init.entities))),
         print("FPS: " + str(clock.get_fps()))))
     init_entity(debug_timer)
     # main loop
@@ -51,28 +55,28 @@ def main():
 
 
 def tick_physics(surface, delta_time):
-    for i in range(len(entities) - 1, -1, -1):
-        entity = entities[i]
+    for i in range(len(init.entities) - 1, -1, -1):
+        entity = init.entities[i]
         entity.tick_physics()
 
 
 def tick_entities(surface, delta_time):
-    for i in range(len(entities) - 1, -1, -1):
-        entity = entities[i]
+    for i in range(len(init.entities) - 1, -1, -1):
+        entity = init.entities[i]
         entity.tick(delta_time)
         if entity.killed:
-            entities.remove(entity)
+            init.entities.remove(entity)
 
 
 def tick_draw(surface, delta_time):
-    for i in range(len(entities) - 1, -1, -1):
-        entity = entities[i]
+    for i in range(len(init.entities) - 1, -1, -1):
+        entity = init.entities[i]
         entity.draw(surface)
 
 
 def post_tick_physics(surface, delta_time):
-    for i in range(len(entities) - 1, -1, -1):
-        entity = entities[i]
+    for i in range(len(init.entities) - 1, -1, -1):
+        entity = init.entities[i]
         entity.post_tick_physics()
 
 
