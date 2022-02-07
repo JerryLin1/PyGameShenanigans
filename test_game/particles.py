@@ -7,6 +7,7 @@ from pygame.color import Color
 
 from test_game.helpers import draw_circle, draw_rect
 from test_game.entity import Entity
+from test_game.init import FIXED_DT
 
 
 class Particle(Entity):
@@ -27,18 +28,18 @@ class Particle(Entity):
             self.color = color + (255,)
         self.vel = vel
         self.accel = accel
-        self.current_life = 0
         self.flags = flags
         self.lf = 1
 
+    def tick_physics(self):
+        self.vel += self.accel * (FIXED_DT / 1000)
+        self.position += self.vel * (FIXED_DT / 1000)
+
     def update(self, tick_time: float):
-        self.vel += self.accel * tick_time / 1000
-        self.position += self.vel
         if self.lifespan >= 0:
-            self.current_life += tick_time
-            if self.current_life >= self.lifespan:
+            if self.time_since_spawn >= self.lifespan:
                 self.killed = True
-        self.lf = (1 - self.current_life / self.lifespan)
+        self.lf = (1 - self.time_since_spawn / self.lifespan)
         if self.lf < 0:
             self.lf = 0
 

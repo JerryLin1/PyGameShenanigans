@@ -19,7 +19,7 @@ class Player(Unit):
         Unit.__init__(self, position)
         self.keys = pygame.key.get_pressed()
         self.prev_keys = self.keys
-        self.speed = 2
+        self.speed = 2000
         self.timers = {
             # This will call trail_particle ever 5 ms when moving
             "trail": Timer(5, self.trail_particle, is_active=False),
@@ -28,7 +28,7 @@ class Player(Unit):
         self.light = Particle(position=self.position,
                               lifespan=-1,
                               lights=[
-                                  Light(40, 0.1, (255,255,255))
+                                  Light(40, 0.1, (255, 255, 255))
                               ],
                               flags=[Particle.LIGHT_FLICKER,
                                      Particle.MAIN_DRAW_DISABLED])
@@ -45,17 +45,15 @@ class Player(Unit):
                 or self.key_down(pygame.K_s)
                 or self.key_down(pygame.K_w)):
             self.accel[0] = (self.key_down(pygame.K_d) - self.key_down(
-                pygame.K_a)) * self.speed * tick_time
+                pygame.K_a)) * self.speed
             self.accel[1] = (self.key_down(pygame.K_s) - self.key_down(
-                pygame.K_w)) * self.speed * tick_time
+                pygame.K_w)) * self.speed
             self.timers["trail"].is_active = True
 
         # If not moving
         else:
             self.accel = Vector2(0, 0)
             self.timers["trail"].is_active = False
-            if self.vel.magnitude() < 0.1:
-                self.vel = pygame.Vector2(0, 0)
 
         if self.key_up(pygame.K_SPACE):
             # kill(self)
@@ -75,10 +73,11 @@ class Player(Unit):
     def trail_particle(self, number=5):
         for i in range(number):
             vector = random_vector2()
-            vector *= random.uniform(0, 1)
+            vector *= random.uniform(0, 100)
             init_entity(Particle(position=copy_vector2(self.position),
-                                 color=get_random_color(100, 255, 0, 255, 0,
-                                                        255)+(200,),
+                                 color=get_random_color(100, 255,
+                                                        0, 255,
+                                                        0, 255) + (200,),
                                  lifespan=1000,
                                  vel=vector,
                                  lights=[
@@ -91,7 +90,7 @@ class Player(Unit):
                                  ]))
 
     def shoot_particle(self):
-        shoot_force = 8
+        shoot_force = 500
         mouse_pos = get_mouse_pos_global()
         diff_vec = mouse_pos - self.position
         diff_vec = diff_vec.normalize() * shoot_force
@@ -119,7 +118,7 @@ class Player(Unit):
         return self.prev_keys[key] and not self.keys[key]
 
 
-def burst_particles(position, amount=5, force=5):
+def burst_particles(position, amount=5, force=300):
     for _ in range(amount):
         x = position[0]
         y = position[1]

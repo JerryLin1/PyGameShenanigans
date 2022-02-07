@@ -1,8 +1,17 @@
+from test_game.init import FIXED_DT
+
+
 class Entity:
     def __init__(self):
         self.killed = False
         self.time_since_spawn = 0
         self.timers = {}
+
+    def tick_physics(self):
+        pass
+    def post_tick_physics(self):
+        for timer in self.timers.values():
+            timer.tick(FIXED_DT)
 
     def tick(self, tick_time: float):
         self.time_since_spawn += tick_time
@@ -20,6 +29,5 @@ class Entity:
         pass
 
     def post_update(self, tick_time):
-        for timer in self.timers.values():
-            timer.tick(tick_time)
+        pass
 
