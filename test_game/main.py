@@ -1,9 +1,9 @@
 import pygame
-from init import entities, WIDTH, HEIGHT, init_entity, FIXED_DT
+from init import entities, WIDTH, HEIGHT, FIXED_DT
 from test_game import init
 from test_game.camera_manager import CameraManager
 from test_game.entity import Entity
-from test_game.helpers import draw_rect, Timer
+from test_game.helpers import draw_rect, Timer, init_entity
 
 from test_game.player import Player
 
@@ -21,10 +21,10 @@ def main():
     physics_update_counter = 0
 
     player = Player(pygame.Vector2(WIDTH // 2, HEIGHT // 2))
-    init.init_entity(player)
+    init_entity(player)
 
     camera = CameraManager()
-    init.init_entity(camera)
+    init_entity(camera)
 
     debug_timer = Entity()
     debug_timer.timers["print"] = Timer(2500, lambda: (

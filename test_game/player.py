@@ -4,10 +4,10 @@ import random
 
 from pygame import Vector2
 
-from init import init_entity
 from test_game import init
 from test_game.helpers import draw_circle, kill, copy_vector2, \
-    get_random_color, get_mouse_pos_global, draw_rect, Light
+    get_random_color, get_mouse_pos_global, draw_rect, Light, \
+    get_entity_by_type, init_entity
 from test_game.entity import Entity
 from test_game.helpers import random_vector2, Timer
 from test_game.particles import Particle, ParticleCircle
@@ -23,7 +23,7 @@ class Player(Unit):
         self.timers = {
             # This will call trail_particle ever 5 ms when moving
             "trail": Timer(5, self.trail_particle, is_active=False),
-            "shoot": Timer(250, self.shoot_particle, is_active=False)
+            "shoot": Timer(50, self.shoot_particle, is_active=False)
         }
         self.light = Particle(position=self.position,
                               lifespan=-1,
@@ -32,7 +32,7 @@ class Player(Unit):
                               ],
                               flags=[Particle.LIGHT_FLICKER,
                                      Particle.MAIN_DRAW_DISABLED])
-        init.init_entity(self.light)
+        init_entity(self.light)
 
     def update(self, tick_time: float):
         self.keys = pygame.key.get_pressed()
@@ -72,7 +72,7 @@ class Player(Unit):
         for i in range(number):
             vector = random_vector2()
             vector *= random.uniform(0, 100)
-            init.init_entity(Particle(position=copy_vector2(self.position),
+            init_entity(Particle(position=copy_vector2(self.position),
                                  color=get_random_color(100, 255,
                                                         0, 255,
                                                         0, 255) + (200,),
@@ -88,16 +88,17 @@ class Player(Unit):
                                  ]))
 
     def shoot_particle(self):
+        get_entity_by_type("CameraManager").camera_shake()
         shoot_force = 500
         mouse_pos = get_mouse_pos_global()
         diff_vec = mouse_pos - self.position
         diff_vec = diff_vec.normalize() * shoot_force
         pos = copy_vector2(self.position)
-        init.init_entity(ParticleCircle(position=copy_vector2(self.position),
-                                   color=(255, 255, 255),
+        init_entity(ParticleCircle(position=copy_vector2(self.position),
+                                   color=(235, 225, 52),
                                    radius=1,
                                    lights=[
-                                       Light(4)
+                                       Light(4, 0.2)
                                    ],
                                    lifespan=5000,
                                    vel=diff_vec))
@@ -110,7 +111,7 @@ class Player(Unit):
         Entity.die(self)
         burst_particles(self.position, 100)
         kill(self.light)
-        init.init_entity(Player(Vector2(0, 0)))
+        init_entity(Player(Vector2(0, 0)))
 
     def key_down(self, key):
         return self.keys[key]
@@ -129,7 +130,7 @@ def burst_particles(position, amount=5, force=300):
         angle = random.uniform(0, math.pi * 2)
         vector = Vector2(math.cos(angle), math.sin(angle))
         vector *= random.uniform(0, force)
-        init.init_entity(ParticleCircle(position=(x, y),
+        init_entity(ParticleCircle(position=(x, y),
                                    color=get_random_color(50, 255,
                                                           50, 255,
                                                           50, 255),

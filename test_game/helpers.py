@@ -130,3 +130,16 @@ class Light:
         self.radius = radius
         self.strength = strength
         self.color = color
+
+def init_entity(entity):
+    init.entities.append(entity)
+
+
+def get_entity_by_type(entity_type):
+    for entity in init.entities:
+        if type(entity).__name__ == entity_type:
+            return entity
+    return None
+
+def get_camera_manager():
+    return get_entity_by_type("CameraManager")
