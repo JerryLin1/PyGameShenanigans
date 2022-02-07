@@ -74,7 +74,7 @@ def kill(entity: Entity):
     Kills the entity to be removed from the global entities array
     :param entity: The entity to be killed
     """
-    entity.killed = True
+    entity.die()
 
 
 def get_random_color(rmin=0, rmax=255,

@@ -5,7 +5,7 @@ from pygame.math import Vector2
 from pygame import draw
 from pygame.color import Color
 
-from test_game.helpers import draw_circle, draw_rect
+from test_game.helpers import draw_circle, draw_rect, kill
 from test_game.entity import Entity
 from test_game.init import FIXED_DT
 
@@ -38,7 +38,7 @@ class Particle(Entity):
     def update(self, tick_time: float):
         if self.lifespan >= 0:
             if self.time_since_spawn >= self.lifespan:
-                self.killed = True
+                kill(self)
         self.lf = (1 - self.time_since_spawn / self.lifespan)
         if self.lf < 0:
             self.lf = 0

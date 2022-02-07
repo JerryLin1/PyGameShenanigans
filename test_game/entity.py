@@ -31,3 +31,5 @@ class Entity:
     def post_update(self, tick_time):
         pass
 
+    def die(self):
+        self.killed = True

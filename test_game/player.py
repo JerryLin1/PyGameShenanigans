@@ -56,7 +56,7 @@ class Player(Unit):
             self.timers["trail"].is_active = False
 
         if self.key_up(pygame.K_SPACE):
-            # kill(self)
+            kill(self)
             burst_particles(self.position)
 
         for event in init.events:
@@ -107,6 +107,12 @@ class Player(Unit):
     def draw(self, surface):
         draw_circle(surface, (219, 0, 44), self.position, 3)
         draw_circle(surface, (255, 255, 255), self.position, 2)
+
+    def die(self):
+        Entity.die(self)
+        burst_particles(self.position, 100)
+        kill(self.light)
+        init_entity(Player((0, 0)))
 
     def key_down(self, key):
         return self.keys[key]
